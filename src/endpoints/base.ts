@@ -6,4 +6,12 @@ export class BaseEndpoint {
   constructor(protected readonly accessToken: string) {
     this.api = new Api(accessToken);
   }
+
+  public setApiKey(apiKey: string) {
+    this.api.setApiKey(apiKey);
+  }
+
+  public setLanguage(language: string) {
+    this.api.setLanguage(language);
+  }
 }

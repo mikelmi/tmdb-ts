@@ -19,97 +19,150 @@ import {
   TvEpisodesEndpoint,
   WatchProvidersEndpoint,
 } from './endpoints';
+import { BaseEndpoint } from './endpoints/base';
 import { CompaniesEndpoint } from './endpoints/companies';
 import { NetworksEndpoint } from './endpoints/networks';
 
 export class TMDB {
-  private readonly accessToken: string;
+  private accessToken: string;
+  private _endpoints = new Map<string, BaseEndpoint>();
 
-  constructor(accessToken: string) {
+  constructor(
+    accessToken: string,
+    private apiKeyAsParam = false,
+    private defaultLanguage: string | undefined = undefined
+  ) {
     this.accessToken = accessToken;
   }
 
+  public setApiKey(apiKey: string) {
+    this.apiKeyAsParam = true;
+    this.accessToken = apiKey;
+    this._endpoints.clear();
+  }
+
+  public setLanguage(language: string) {
+    this.defaultLanguage = language;
+    this._endpoints.clear();
+  }
+
+  private getEndpoint<T extends BaseEndpoint>(
+    key: string,
+    EndpointClass: typeof BaseEndpoint
+  ): T {
+    if (!this._endpoints.has(key)) {
+      const endpoint = new EndpointClass(this.accessToken);
+
+      if (!this.apiKeyAsParam) {
+        endpoint.setApiKey(this.accessToken);
+      }
+
+      if (this.defaultLanguage) {
+        endpoint.setLanguage(this.defaultLanguage);
+      }
+
+      this._endpoints.set(key, endpoint);
+    }
+
+    return this._endpoints.get(key) as T;
+  }
+
   get account(): AccountEndpoint {
-    return new AccountEndpoint(this.accessToken);
+    return this.getEndpoint<AccountEndpoint>('account', AccountEndpoint);
   }
 
   get configuration(): ConfigurationEndpoint {
-    return new ConfigurationEndpoint(this.accessToken);
+    return this.getEndpoint<ConfigurationEndpoint>(
+      'configuration',
+      ConfigurationEndpoint
+    );
   }
 
   get certifications(): CertificationEndpoint {
-    return new CertificationEndpoint(this.accessToken);
+    return this.getEndpoint<CertificationEndpoint>(
+      'certifications',
+      CertificationEndpoint
+    );
   }
 
   get changes(): ChangeEndpoint {
-    return new ChangeEndpoint(this.accessToken);
+    return this.getEndpoint<ChangeEndpoint>('changes', ChangeEndpoint);
   }
 
   get credits(): CreditsEndpoint {
-    return new CreditsEndpoint(this.accessToken);
+    return this.getEndpoint<CreditsEndpoint>('credits', CreditsEndpoint);
   }
 
   get companies(): CompaniesEndpoint {
-    return new CompaniesEndpoint(this.accessToken);
+    return this.getEndpoint<CompaniesEndpoint>('companies', CompaniesEndpoint);
   }
 
   get networks(): NetworksEndpoint {
-    return new NetworksEndpoint(this.accessToken);
+    return this.getEndpoint<NetworksEndpoint>('networks', NetworksEndpoint);
   }
 
   get search(): SearchEndpoint {
-    return new SearchEndpoint(this.accessToken);
+    return this.getEndpoint<SearchEndpoint>('search', SearchEndpoint);
   }
 
   get genres(): GenreEndpoint {
-    return new GenreEndpoint(this.accessToken);
+    return this.getEndpoint<GenreEndpoint>('genres', GenreEndpoint);
   }
 
   get movies(): MoviesEndpoint {
-    return new MoviesEndpoint(this.accessToken);
+    return this.getEndpoint<MoviesEndpoint>('movies', MoviesEndpoint);
   }
 
   get tvShows(): TvShowsEndpoint {
-    return new TvShowsEndpoint(this.accessToken);
+    return this.getEndpoint<TvShowsEndpoint>('tvShows', TvShowsEndpoint);
   }
 
   get tvEpisode(): TvEpisodesEndpoint {
-    return new TvEpisodesEndpoint(this.accessToken);
+    return this.getEndpoint<TvEpisodesEndpoint>(
+      'tvEpisode',
+      TvEpisodesEndpoint
+    );
   }
 
   get discover(): DiscoverEndpoint {
-    return new DiscoverEndpoint(this.accessToken);
+    return this.getEndpoint<DiscoverEndpoint>('discover', DiscoverEndpoint);
   }
 
   get people(): PeopleEndpoint {
-    return new PeopleEndpoint(this.accessToken);
+    return this.getEndpoint<PeopleEndpoint>('people', PeopleEndpoint);
   }
 
   get review(): ReviewEndpoint {
-    return new ReviewEndpoint(this.accessToken);
+    return this.getEndpoint<ReviewEndpoint>('review', ReviewEndpoint);
   }
 
   get trending(): TrendingEndpoint {
-    return new TrendingEndpoint(this.accessToken);
+    return this.getEndpoint<TrendingEndpoint>('trending', TrendingEndpoint);
   }
 
   get find(): FindEndpoint {
-    return new FindEndpoint(this.accessToken);
+    return this.getEndpoint<FindEndpoint>('find', FindEndpoint);
   }
 
   get keywords(): KeywordsEndpoint {
-    return new KeywordsEndpoint(this.accessToken);
+    return this.getEndpoint<KeywordsEndpoint>('keywords', KeywordsEndpoint);
   }
 
   get collections(): CollectionsEndpoint {
-    return new CollectionsEndpoint(this.accessToken);
+    return this.getEndpoint<CollectionsEndpoint>(
+      'collections',
+      CollectionsEndpoint
+    );
   }
 
   get tvSeasons(): TvSeasonsEndpoint {
-    return new TvSeasonsEndpoint(this.accessToken);
+    return this.getEndpoint<TvSeasonsEndpoint>('tvSeasons', TvSeasonsEndpoint);
   }
 
   get watchProviders(): WatchProvidersEndpoint {
-    return new WatchProvidersEndpoint(this.accessToken);
+    return this.getEndpoint<WatchProvidersEndpoint>(
+      'watchProviders',
+      WatchProvidersEndpoint
+    );
   }
 }
