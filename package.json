@@ -1,11 +1,12 @@
 {
   "name": "tmdb-ts",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "TMDB v3 library wrapper",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "compile": "rm -rf dist && tsc -d",
+    "prepare": "rm -rf dist && tsc -d",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix",
     "format": "prettier --write src",
