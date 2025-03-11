@@ -5,7 +5,7 @@ import { BASE_URL_V3 } from './common/constants';
 
 export class Api {
   private headers: Headers;
-  private defaultParams: URLSearchParams = new URLSearchParams();
+  private defaultParams: Record<string, string> = {};
 
   constructor(accessToken: string) {
     this.headers = new Headers();
@@ -15,16 +15,17 @@ export class Api {
 
   public setApiKey(apiKey: string) {
     this.headers.delete('Authorization');
-    this.defaultParams.set('api_key', apiKey);
+    this.defaultParams.api_key = apiKey;
   }
 
   public setLanguage(language: string) {
-    this.defaultParams.set('language', language);
+    this.defaultParams.language = language;
   }
 
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async get<T>(path: string, options?: Record<string, any>): Promise<T> {
     const params = parseOptions({ ...this.defaultParams, ...options });
+
     const response = await fetch(`${BASE_URL_V3}${path}?${params}`, {
       method: 'GET',
       headers: this.headers,
