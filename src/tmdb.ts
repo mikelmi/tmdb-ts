@@ -53,7 +53,7 @@ export class TMDB {
     if (!this._endpoints.has(key)) {
       const endpoint = new EndpointClass(this.accessToken);
 
-      if (!this.apiKeyAsParam) {
+      if (this.apiKeyAsParam) {
         endpoint.setApiKey(this.accessToken);
       }
 
