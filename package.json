@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "rm -rf dist && tsc -d",
     "prepare": "rm -rf dist && tsc -d",
-    "postinstall": "rm -rf dist && tsc -d",
+    "prepack": "rm -rf dist && tsc -d",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix",
     "format": "prettier --write src",
